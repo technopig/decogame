@@ -59,6 +59,7 @@ const svg = d3.select("#chartContainer")
     .attr("width", BOX_WIDTH)
     .attr("height", BOX_HEIGHT);
 
+const legendContainer = d3.select("#legend-container");
 
 const xScale = d3.scaleLinear()
     .domain([0,DIVE_TIME])
@@ -172,6 +173,16 @@ svg.append("g")
     .attr("transform", `translate(${CHART_WIDTH})`)
     .call(yAxisATM);
 
+const legendItem = legendContainer.append("div")
+    .attr("class", "legend-item");
+
+legendItem.append("div")
+    .attr("class", "legend-color")
+    .style("background-color", "purple");
+
+legendItem.append("span")
+    .text(`Line`);
+
 // Create vertical slider
 const slider = document.getElementById('sliderContainer');
 noUiSlider.create(slider, {
@@ -252,13 +263,18 @@ function updateChart() {
     sliderValueElement.textContent = `DEPTH: ${depth.toFixed(0)} ft`;
     timeValueElement.textContent = `DIVE TIME: ${string_dive_time}\
                                     SIM TIME: ${string_sim_time}`;
-    // Stop the animation after 10 seconds
+
     if (sim_t >= TERM_TIME * 60000) { // 60,000 milliseconds = 1 min
         isPaused = true;
         return;
     }
 
     if (isPaused) {
+        return;
+    }
+
+    if (dive_t >= DIVE_TIME) {
+        isPaused = true;
         return;
     }
 
@@ -287,11 +303,11 @@ function updateChart() {
     m_value_data.push({ x: dive_t, y: m_value });
     gradient_factor_data.push({ x: dive_t, y: gradient_factor });
 
-    if (depth_data[depth_data.length - 1].x >= DIVE_TIME) {
-        // Stop updating the chart
-        isPaused = true;
-        return;
-    }
+    // if (depth_data[depth_data.length - 1].x >= DIVE_TIME) {
+    //     // Stop updating the chart
+    //     isPaused = true;
+    //     return;
+    // }
 
     // Update lines
     svg.select(".depth_line")

@@ -11,15 +11,35 @@
     <!-- Include noUiSlider -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
+    <style>
+    /* Add your CSS styles here */
+    .legend {
+      display: flex;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+  </style>
 </head>
 <body>
     <div style="display: flex; align-items: center;">
         <!-- Vertical slider container on the left with a fixed width -->
         <div id="sliderContainer" style="height: 200px; margin-right: 20px;"></div>
         <!-- Display the currently selected slider position below the slider -->
-        <div id="sliderValue" style="margin-top: 10px;"></div>
+        <div id="sliderValue" style="width: 100px; margin-top: 10px;"></div>
         <!-- Chart container with a border on the right -->
         <div id="chartContainer" style="position: relative; "></div><!--border: 1px solid #ccc;-->
+        <div id="legendContainer" class="legend"></div>
     </div>
     <div>
         <button id="pauseButton" onclick="pauseChart()">Pause</button>
