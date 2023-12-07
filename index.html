@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Number Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-    </style>
+    <title>Live Chart with D3.js and Slider</title>
+
+    <!-- Include D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Include noUiSlider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
 </head>
 <body>
-    <h1>Guess the Number Game</h1>
-    <p>Enter a number between 1 and 100:</p>
-    <input type="text" id="guessInput">
-    <button onclick="checkGuess()">Submit Guess</button>
-    <p id="message"></p>
+    <div style="display: flex; align-items: center;">
+        <!-- Vertical slider container on the left with a fixed width -->
+        <div id="sliderContainer" style="height: 200px; margin-right: 20px;"></div>
+        <!-- Display the currently selected slider position below the slider -->
+        <div id="sliderValue" style="margin-top: 10px;"></div>
+        <!-- Chart container with a border on the right -->
+        <div id="chartContainer" style="position: relative; "></div><!--border: 1px solid #ccc;-->
+    </div>
+    <div>
+        <button id="pauseButton" onclick="pauseChart()">Pause</button>
+        <button id="playButton" onclick="playChart()">Play</button>
+    </div>
+    <div>
+        <div id="timeValue" style="margin-top: 50px;"></div>
+    <!-- Pause and Restart buttons -->
 
-    <script src="script.js"></script>
+  </div>
+    <!-- Include your game script -->
+    <script src="decogame.js"></script>
 </body>
 </html>
