@@ -2,11 +2,15 @@
 let depth_data = [];
 let ambient_pressure_data = [];
 let tissue_pressure_data = [];
+let m_value_data = [];
+let gradient_factor_data = [];
 let sim_t = 0;
 let dive_t = 0;
 let depth = 0;
+let m_value = 0;
 let ambient_pressure = 1; // start at 1 atm
-let tissue_pressure = 1; // start at 1 atm
+let gradient_factor = 0;
+
 
 let step_num = 0;
 let isPaused = true;
@@ -46,6 +50,7 @@ let CHART_HEIGHT = BOX_HEIGHT - PADDING_PX;
 let MAX_POINTS = Math.ceil(DIVE_TIME / TIME_STEP);
 let MAX_PRESSURE = MAX_DEPTH / DEPTH_ATM + 1;
 let GAS_FRAC = 1 - FRAC_O2;
+let tissue_pressure = GAS_FRAC; // start at saturation
 
 
 // Create SVG container for the chart
@@ -68,12 +73,18 @@ const yScaleATM = d3.scaleLinear()
     .domain([MAX_PRESSURE, 0])
     .range([PADDING_PX, CHART_HEIGHT]);
 
+const yScalePct = d3.scaleLinear()
+    .domain([100, 0])
+    .range([PADDING_PX, CHART_HEIGHT]);
+
 
 const xAxis = d3.axisBottom(xScale);
 
 const yAxisFeet = d3.axisLeft(yScaleFeet);
 
 const yAxisATM = d3.axisRight(yScaleATM);
+
+const yAxisPct = d3.axisLeft(yScalePct);
 
 
 // Create line function
@@ -89,6 +100,18 @@ const tissue_pressure_line = d3.line()
     .x(d => xScale(d.x))
     .y(d => yScaleATM(d.y));
 
+const m_value_line = d3.line()
+    .x(d => xScale(d.x))
+    .y(d => yScaleATM(d.y));
+
+const gradient_factor_line = d3.line()
+    .x(d => xScale(d.x))
+    .y(d => yScalePct(d.y));
+
+// const dcs_area = d3.area()
+//     .x(d => xScale(d.x))
+//     .y0(d => Math.min( yScaleATM(d.y), yScaleATM(getYOnMValue(d.x))))
+//     .y1(d => Math.max( yScaleATM(d.y), yScaleATM(getYOnMValue(d.x))));
 
 // Add initial line to the chart
 svg.append("path")
@@ -114,6 +137,28 @@ svg.append("path")
     .attr("stroke", "green")
     .attr("stroke-width", 2)
     .attr("d", tissue_pressure_line);
+
+svg.append("path")
+    .datum(m_value_data)
+    .attr("class", "m_value_line")
+    .attr("fill", "none")
+    .attr("stroke", "orange")
+    .attr("stroke-width", 2)
+    .attr("d", m_value_line);
+
+svg.append("path")
+    .datum(gradient_factor_data)
+    .attr("class", "gradient_factor_line")
+    .attr("fill", "none")
+    .attr("stroke", "purple")
+    .attr("stroke-width", 2)
+    .attr("d", gradient_factor_line);
+
+// svg.append("path")
+//     .datum(m_value_data)
+//     .attr("class", "dcs_area")
+//     .attr("fill", "rgba(255, 0, 0, 0.3)")
+//     .attr("d", dcs_area);
 
 svg.append("g")
     .attr("transform", `translate(0, ${CHART_HEIGHT})`)
@@ -164,24 +209,39 @@ function getStringTime(minutes) {
     return min + ":" + sec;
 }
 
-function getHalfLife(gas, compartment) {
-    return 4; // for now, 4 is the halflife of n2 in compartment 1
+// Function to return halflife, A, and B for Buhlmann's formula
+function getConstants(gas, compartment) {
+    half_life = 4;
+    const A = 1.2599210498948732;
+    const B = 0.5049999999999999;
+    return [half_life, A, B]; // for now, 4 is the halflife of n2 in compartment 1
 }
 
 // Function that returns the next tissue pressure
-function getNextTissuePressure(current_pressure, amb_pressure, gas, compartment) {
-    const half_life = getHalfLife(gas, compartment);
+function getNextTissuePressure(current_pressure, amb_pressure, half_life) {
     const gas_pressure = GAS_FRAC * amb_pressure;
     const exp = (1 - (1/2)^(TIME_STEP/half_life));
-    console.log(exp);
     const p = current_pressure +
                 (gas_pressure - current_pressure) *
                 (1 - (1/2) ** (TIME_STEP/half_life));
-    console.log(current_pressure +
-                (gas_pressure - current_pressure) *
-                (1 - (1/2) ** (TIME_STEP/half_life)));
     return p;
 }
+
+// Function that returns the M value (minimum tolerated ambient pressure)
+function getMValue(tissue_pressure, A, B) {
+    const m = (tissue_pressure - A) * B;
+    if (m > 0) {return m;} else {return 0;}
+}
+
+// Function that returns the gradient factor
+function getGradientFactor(tissue_pressure, ambient_pressure, m_value) {
+    const gf = (tissue_pressure - ambient_pressure) / (tissue_pressure - m_value) * 100;
+    if (gf > 0) {return gf;} else {return 0;}
+}
+
+// function getYOnMValue(x) {
+//     return m_value_data[x];
+// }
 
 const animationStartTime = performance.now(); // Get the start time
 const chartInterval = setInterval(updateChart, UPDATE_INTERVAL * 60 * 1000);
@@ -212,16 +272,20 @@ function updateChart() {
 
     // calculate things
     ambient_pressure = depth / DEPTH_ATM + 1; // pressure in atmospheres
+    const [half_life, A, B] = getConstants(gas, compartment);
     tissue_pressure = getNextTissuePressure(tissue_pressure,
                                             ambient_pressure,
-                                            gas,
-                                            compartment);
+                                            half_life);
+    m_value = getMValue(tissue_pressure, A, B);
+    gradient_factor = getGradientFactor(tissue_pressure, ambient_pressure, m_value);
 
     // console.log(tissue_pressure);
     // Update data arrays
     depth_data.push({ x: dive_t, y: depth });
     ambient_pressure_data.push({ x: dive_t, y: ambient_pressure });
     tissue_pressure_data.push({ x: dive_t, y: tissue_pressure });
+    m_value_data.push({ x: dive_t, y: m_value });
+    gradient_factor_data.push({ x: dive_t, y: gradient_factor });
 
     if (depth_data[depth_data.length - 1].x >= DIVE_TIME) {
         // Stop updating the chart
@@ -241,6 +305,18 @@ function updateChart() {
     svg.select(".tissue_pressure_line")
         .datum(tissue_pressure_data)
         .attr("d", tissue_pressure_line);
+
+    svg.select(".m_value_line")
+        .datum(m_value_data)
+        .attr("d", m_value_line);
+
+    svg.select(".gradient_factor_line")
+        .datum(gradient_factor_data)
+        .attr("d", gradient_factor_line);
+
+    // svg.select(".dcs_area")
+    //     .datum(m_value_data)
+    //     .attr("d", dcs_area);
 
     // Adjust the maximum length of the tail (e.g., 10,000 data points)
     if (depth_data.length > MAX_POINTS) {
