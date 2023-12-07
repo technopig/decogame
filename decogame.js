@@ -1,9 +1,12 @@
 // Set up initial data
 let depth_data = [];
 let ambient_pressure_data = [];
+let tissue_pressure_data = [];
 let sim_t = 0;
 let dive_t = 0;
 let depth = 0;
+let ambient_pressure = 1; // start at 1 atm
+let tissue_pressure = 1; // start at 1 atm
 
 let step_num = 0;
 let isPaused = true;
@@ -11,13 +14,18 @@ let isPaused = true;
 let string_dive_time = "";
 let string_sim_time = "";
 
+let gas = "n2";
+let compartment = 1;
+
 
 
 
 // dive properties
 let MAX_DEPTH = 300; // depth in feet
-let DIVE_TIME = 10; // dive time in minutes
+let DIVE_TIME = 100; // dive time in minutes
 let DEPTH_ATM = 33.005249; // depth in ft per atmosphere
+let GAS = "N2"; // gasses other than o2
+let FRAC_O2 = 0.21 // fraction of o2 in the mix
 
 // chart properties
 let BOX_WIDTH = 500;
@@ -36,6 +44,8 @@ let TERM_TIME = SIMULATION_TIME * 1.5; // give up after 150% of desired time
 let CHART_WIDTH = BOX_WIDTH - PADDING_PX;
 let CHART_HEIGHT = BOX_HEIGHT - PADDING_PX;
 let MAX_POINTS = Math.ceil(DIVE_TIME / TIME_STEP);
+let MAX_PRESSURE = MAX_DEPTH / DEPTH_ATM + 1;
+let GAS_FRAC = 1 - FRAC_O2;
 
 
 // Create SVG container for the chart
@@ -50,29 +60,60 @@ const xScale = d3.scaleLinear()
     .range([PADDING_PX, CHART_WIDTH]);
 
 
-const yScale = d3.scaleLinear()
+const yScaleFeet = d3.scaleLinear()
     .domain([0, MAX_DEPTH])
+    .range([PADDING_PX, CHART_HEIGHT]);
+
+const yScaleATM = d3.scaleLinear()
+    .domain([MAX_PRESSURE, 0])
     .range([PADDING_PX, CHART_HEIGHT]);
 
 
 const xAxis = d3.axisBottom(xScale);
 
-const yAxis = d3.axisLeft(yScale);
+const yAxisFeet = d3.axisLeft(yScaleFeet);
+
+const yAxisATM = d3.axisRight(yScaleATM);
 
 
 // Create line function
 const depth_line = d3.line()
     .x(d => xScale(d.x))
-    .y(d => yScale(d.y));
+    .y(d => yScaleFeet(d.y));
+
+const ambient_pressure_line = d3.line()
+    .x(d => xScale(d.x))
+    .y(d => yScaleATM(d.y));
+
+const tissue_pressure_line = d3.line()
+    .x(d => xScale(d.x))
+    .y(d => yScaleATM(d.y));
 
 
 // Add initial line to the chart
 svg.append("path")
     .datum(depth_data)
+    .attr("class", "depth_line")
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2)
     .attr("d", depth_line);
+
+svg.append("path")
+    .datum(ambient_pressure_data)
+    .attr("class", "ambient_pressure_line")
+    .attr("fill", "none")
+    .attr("stroke", "red")
+    .attr("stroke-width", 2)
+    .attr("d", ambient_pressure_line);
+
+svg.append("path")
+    .datum(tissue_pressure_data)
+    .attr("class", "tissue_pressure_line")
+    .attr("fill", "none")
+    .attr("stroke", "green")
+    .attr("stroke-width", 2)
+    .attr("d", tissue_pressure_line);
 
 svg.append("g")
     .attr("transform", `translate(0, ${CHART_HEIGHT})`)
@@ -80,7 +121,11 @@ svg.append("g")
 
 svg.append("g")
     .attr("transform", `translate(${PADDING_PX}, 0)`)
-    .call(yAxis);
+    .call(yAxisFeet);
+
+svg.append("g")
+    .attr("transform", `translate(${CHART_WIDTH})`)
+    .call(yAxisATM);
 
 // Create vertical slider
 const slider = document.getElementById('sliderContainer');
@@ -111,6 +156,7 @@ function playChart() {
     updateChart();
 }
 
+// Function to convert minutes to a string of min:sec like "15:34"
 function getStringTime(minutes) {
     const min = Math.floor(minutes);
     const sec = Math.round((minutes - min) * 60);
@@ -118,11 +164,30 @@ function getStringTime(minutes) {
     return min + ":" + sec;
 }
 
+function getHalfLife(gas, compartment) {
+    return 4; // for now, 4 is the halflife of n2 in compartment 1
+}
+
+// Function that returns the next tissue pressure
+function getNextTissuePressure(current_pressure, amb_pressure, gas, compartment) {
+    const half_life = getHalfLife(gas, compartment);
+    const gas_pressure = GAS_FRAC * amb_pressure;
+    const exp = (1 - (1/2)^(TIME_STEP/half_life));
+    console.log(exp);
+    const p = current_pressure +
+                (gas_pressure - current_pressure) *
+                (1 - (1/2) ** (TIME_STEP/half_life));
+    console.log(current_pressure +
+                (gas_pressure - current_pressure) *
+                (1 - (1/2) ** (TIME_STEP/half_life)));
+    return p;
+}
+
 const animationStartTime = performance.now(); // Get the start time
 const chartInterval = setInterval(updateChart, UPDATE_INTERVAL * 60 * 1000);
 // Function to update the chart
 function updateChart() {
-    // Calculate the elapsed time
+    // Display the currently selected slider position
     depth = parseFloat(slider.noUiSlider.get());
     sliderValueElement.textContent = `DEPTH: ${depth.toFixed(0)} ft`;
     timeValueElement.textContent = `DIVE TIME: ${string_dive_time}\
@@ -139,16 +204,24 @@ function updateChart() {
 
     // Update time
     dive_t += TIME_STEP; // simulated time in minutes
-    sim_t = performance.now() - animationStartTime;
+    sim_t = performance.now() - animationStartTime; // Calculate the elapsed time
     string_dive_time = getStringTime(dive_t); // get a string for dive time
     string_sim_time = getStringTime(sim_t/1000/60); // get a string for sim time
+
     step_num += 1; // increment step number
 
-    // update the depth based on slider position
+    // calculate things
+    ambient_pressure = depth / DEPTH_ATM + 1; // pressure in atmospheres
+    tissue_pressure = getNextTissuePressure(tissue_pressure,
+                                            ambient_pressure,
+                                            gas,
+                                            compartment);
 
-
-    // Update data array
+    // console.log(tissue_pressure);
+    // Update data arrays
     depth_data.push({ x: dive_t, y: depth });
+    ambient_pressure_data.push({ x: dive_t, y: ambient_pressure });
+    tissue_pressure_data.push({ x: dive_t, y: tissue_pressure });
 
     if (depth_data[depth_data.length - 1].x >= DIVE_TIME) {
         // Stop updating the chart
@@ -156,14 +229,18 @@ function updateChart() {
         return;
     }
 
-    // Update line
-    svg.select("path")
+    // Update lines
+    svg.select(".depth_line")
         .datum(depth_data)
         .attr("d", depth_line); //old was line.x(d => xScale(d.x)).y(d => yScale(d.y))
 
-    // Display the currently selected slider position
+    svg.select(".ambient_pressure_line")
+        .datum(ambient_pressure_data)
+        .attr("d", ambient_pressure_line);
 
-
+    svg.select(".tissue_pressure_line")
+        .datum(tissue_pressure_data)
+        .attr("d", tissue_pressure_line);
 
     // Adjust the maximum length of the tail (e.g., 10,000 data points)
     if (depth_data.length > MAX_POINTS) {
