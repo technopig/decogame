@@ -1,0 +1,15 @@
+.signup-form {
+    display: flex;
+    flex-direction: column;
+}
+
+input,
+.signup-button,
+.login-button {
+    margin: 5px 0px;
+}
+
+.signup-button,
+.login-button {
+    cursor: pointer;
+}

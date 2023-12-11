@@ -1,11 +1,14 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
-import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 // import './styles.css';
 
-export const Auth = () => {
+
+
+
+
+export const SignUp = () => {
 
     // states
     const [email, setEmail] = useState("");
@@ -13,18 +16,13 @@ export const Auth = () => {
 
     // hooks
     const navigate = useNavigate();
-    const { isAuth } = useGetUserInfo();
-
-    if (isAuth) {
-        return <Navigate to="/deco-game" />;
-    }
 
     // handle submission of the form
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("in handleSubmit");
         try {
-            const userCredential = await signInWithEmailAndPassword(
+            const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
@@ -48,8 +46,8 @@ export const Auth = () => {
 
     return (
         <div>
-            <h3> Sign In </h3>
-            <form onSubmit={handleSubmit} className='login-form'>
+            <h3> Register New User </h3>
+            <form onSubmit={handleSubmit} className='signup-form'>
                 <input
                     type="email"
                     placeholder="Your Email"
@@ -66,9 +64,9 @@ export const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <br /><br />
-                <button type="submit" className='login-button'>Log In</button>
+                <button type="submit" className='signup-button'>Sign Up!</button>
             </form>
-            <p>New? <Link to="/sign-up">Create an Account</Link></p>
+            <p>Go to <Link to="/">Login Page</Link></p>
         </div>
     );
 }
