@@ -40,24 +40,24 @@ export const useSetUserSettings = () => {
                     mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c5: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c6: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c7: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c8: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c9: {
                     nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
@@ -99,21 +99,6 @@ export const useSetUserSettings = () => {
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
                     mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
                 }
-                // nitrogenCpt2Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt3Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt4Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt5Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt6Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt7Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt8Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt9Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt10Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt11Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt12Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt13Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt14Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt15Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
-                // nitrogenCpt16Line: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'}
             }
         } // end of default settings object
     ) => {

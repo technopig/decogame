@@ -101,6 +101,9 @@ const Plot = () => {
         const newAmbientPressure = depth / 33 + 1;
         const newDiveTime = diveTime + userSettings.simulatedTimeStep;
         const oldDataPoint = chartData.length >=1 && chartData[chartData.length-1]; // get the latest data point
+        console.log(" ");
+        console.log("old Data Point: ", oldDataPoint);
+        console.log(" ");
         // const newMValue = getNextMValue(oldDataPoint.tissue_pressure, )
 
         setDiveTime(newDiveTime);
@@ -114,14 +117,15 @@ const Plot = () => {
         };
 
         // loop over all {16} compartments 
-        for (let i=1; i<= 4; i++) {
+        for (let i=1; i<= 8; i++) {
             const compartment = `c${i}`;
             // console.log(`nitrogen for cpt ${compartment}`, userSettings.linesConfig);
             // userSettings.linesConfig[compartment].nitrogenLine.visible);
-            const nitrogenCompartment = CONSTANTS.nitrogen[compartment]
+            const nitrogenCompartment = CONSTANTS.nitrogen[compartment];
             const heliumCompartment = CONSTANTS.helium[compartment];
             const oldNitrogenLine = oldDataPoint[compartment]?.nitrogenLine;
             const oldHeliumLine = oldDataPoint[compartment]?.heliumLine;
+            console.log(compartment, nitrogenCompartment, heliumCompartment, oldNitrogenLine, oldHeliumLine);
             
             // get the new nitrogen pressure
             const nitrogenPoint = getNextTissuePressureNitrogen(
@@ -186,7 +190,7 @@ const Plot = () => {
                         tickFormatter={(tick) => Math.floor(tick/60)}
                     />
                     <YAxis reversed='true' yAxisId="feet" orientation="left" />
-                    <YAxis type='number' yAxisId="ATM" orientation="right" />
+                    <YAxis type='number' yAxisId="ATM" orientation="right" domain={[0,6]}/>
                     {/* <Tooltip /> */}
                     <Legend />
                     {Object.keys(userSettings.linesConfig).map(key => { // loop through all the keys in linesConfig
@@ -215,7 +219,7 @@ const Plot = () => {
                                         <Line
                                             key={`${key}-${key2}`}
                                             type="monotone"
-                                            dataKey={(data) => data[key][key2]}
+                                            dataKey={(data) => data[key]?.[key2]}
                                             stroke={cLineConfig.stroke}
                                             yAxisId={cLineConfig.yAxisId}
                                             name={`${key}-${key2}`}

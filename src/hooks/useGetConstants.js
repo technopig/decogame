@@ -26,7 +26,68 @@ const useGetConstants = () => {
                 half_life: 18.5,
                 a: 0.7562,
                 b: 0.7825
-            }
+            },
+            c5:{
+                half_life: 27,
+                a: 0.6200,
+                b: 0.8126
+            },
+            c6:{
+                half_life: 38.3,
+                a: 0.5043,
+                b: 0.8434
+            },
+            c7:{
+                half_life: 54.3,
+                a: 0.4410,
+                b: 0.8693
+            },
+            c8:{
+                half_life: 77,
+                a: 0.4000,
+                b: 0.8910
+            },
+            // c9:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c10:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c11:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c12:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c13:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c14:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c15:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // },
+            // c16:{
+            //     half_life: 18.5,
+            //     a: 0.7562,
+            //     b: 0.7825
+            // }
+
         },
         helium: {
             c1: {
@@ -48,6 +109,66 @@ const useGetConstants = () => {
                 half_life: 7.0,
                 a: 1.0465,
                 b: 0.6265
+            },
+            c5:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c6:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c7:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c8:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c9:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c10:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c11:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c12:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c13:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c14:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c15:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
+            },
+            c16:{
+                half_life: 18.5,
+                a: 0.7562,
+                b: 0.7825
             }
         }
     }
@@ -97,64 +218,46 @@ const useGetConstants = () => {
             heliumLine: saturatedTissuePressureHelium,
             mValueLine: 0
         },
-        c9: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c10: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c11: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c12: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c13: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c14: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c15: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        },
-        c16: {
-            nitrogenLine: saturatedTissuePressureNitrogen,
-            heliumLine: saturatedTissuePressureHelium,
-            mValueLine: 0
-        }
-        // c2: {},
-        // c3: {},
-        // nitrogenCpt2Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt3Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt4Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt5Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt6Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt7Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt8Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt9Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt10Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt11Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt12Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt13Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt14Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt15Line: saturatedTissuePressureNitrogen,
-        // nitrogenCpt16Line: saturatedTissuePressureNitrogen,
-        // mValueLine: 1
+        // c9: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c10: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c11: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c12: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c13: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c14: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c15: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // },
+        // c16: {
+        //     nitrogenLine: saturatedTissuePressureNitrogen,
+        //     heliumLine: saturatedTissuePressureHelium,
+        //     mValueLine: 0
+        // }
     }];
     return { CONSTANTS, DEFAULT_CHART_DATA };
 }
