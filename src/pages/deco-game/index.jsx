@@ -4,6 +4,8 @@ import { auth } from "../../config/firebase-config";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Plot from "../../components/plot/Plot";
+import SettingsPane from "../../components/settings-pane/SettingsPane";
+import "./styles.css";
 
 export const DecoGame = () => {
     // hooks
@@ -38,7 +40,10 @@ export const DecoGame = () => {
             <div>
                 <h3>Welcome to DecoGame!</h3>
             </div>
-            <Plot />
+            <div className="game-area">
+                <Plot />
+                <SettingsPane />
+            </div>
             <div>
                 <button onClick={handleSignOut}>Sign Out</button>
             </div>

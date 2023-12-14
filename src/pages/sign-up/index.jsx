@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
+import useSetUserSettings from "../../hooks/useSetUserSettings";
 // import './styles.css';
 
 
@@ -13,6 +14,7 @@ export const SignUp = () => {
     // states
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { updateSettings } = useSetUserSettings();
 
     // hooks
     const navigate = useNavigate();
@@ -35,7 +37,14 @@ export const SignUp = () => {
             };
             localStorage.setItem('token', user.accessToken);
             localStorage.setItem('auth', JSON.stringify(authInfo));
-            console.log(localStorage.getItem('auth'));
+
+            updateSettings({
+                chartUpdateIntervalMS: 50,
+                gasPercentHelium: 0,
+                gasPercentNitrogen: 79,
+                gasPercentOxygen: 21
+            });
+            
             navigate("/deco-game");
         } catch (err) {
             console.error(err);
