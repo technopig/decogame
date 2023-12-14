@@ -18,25 +18,26 @@ export const useSetUserSettings = () => {
             linesConfig = {
                 depthLine: { stroke: '#8884d8', visible: true, yAxisId: 'feet'},
                 ambientPressureLine: { stroke: '#744700', visible: true, yAxisId: 'ATM'},
+                leadingMValueLine: { stroke: '#FF7400', visible: true, yAxisId: 'ATM'},
                 c1: {
                     nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
                     mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c2: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c3: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c4: {
-                    nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},
+                    nitrogenLine: { stroke: '#b6d7a8', visible: true, yAxisId: 'ATM'},
                     heliumLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM' },
-                    mValueLine: {stroke: '#cc0000', visible: false, yAxisId: 'ATM'}
+                    mValueLine: {stroke: '#cc0000', visible: true, yAxisId: 'ATM'}
                 },
                 c5: {
                     nitrogenLine: { stroke: '#b6d7a8', visible: false, yAxisId: 'ATM'},

@@ -6,7 +6,7 @@ import useGetConstants from '../../hooks/useGetConstants.js';
 // import "./styles.css";
 import "../../App.css";
 
-const MAX_DATA_POINTS = 15000;
+const MAX_DATA_POINTS = 500;
 
 const Plot = () => {
     // hooks
@@ -33,21 +33,47 @@ const Plot = () => {
         setDepth(0);
     }
 
-    const getNextMValue = (tissue_pressure, A, B) => {
-        const m = (tissue_pressure - A) * B;
-        return m > 0 ? m : 0;
+    const getLeadingMValueLine = (dataPoint) => {
+        let maxMValue = 0;
+        for (const compartment in dataPoint) {
+            // Make sure this is one of the compartments and not a different property
+            if (compartment.startsWith('c') && dataPoint[compartment].mValueLine !== undefined) {
+                // Update maxMValue if the current compartment's mValueLine is greater
+                maxMValue = Math.max(maxMValue, dataPoint[compartment]?.mValueLine);
+            }
+        }
+        return maxMValue;
     }
 
-    const getNextTissuePressure = (
+    const getNextMValue = (tissue_pressure, A, B) => {
+        const m = (tissue_pressure - A) * B;
+        return m > 1 ? m : 1;
+    }
+
+    const getNextTissuePressureNitrogen = (
         current_pressure,
         amb_pressure,
         half_life
     ) => {
         half_life = half_life * 60;
         const nitrogen_frac = userSettings.gasPercentNitrogen / 100;
-        const helium_frac = userSettings.gasPercentHelium / 100;
         const simulatedTimeStep = userSettings.simulatedTimeStep;
         const gas_pressure = nitrogen_frac * amb_pressure;
+        const p = current_pressure +
+            (gas_pressure - current_pressure) *
+            (1 - (1/2) ** (simulatedTimeStep/half_life));
+        return p;
+    }
+
+    const getNextTissuePressureHelium = (
+        current_pressure,
+        amb_pressure,
+        half_life
+    ) => {
+        half_life = half_life * 60;
+        const helium_frac = userSettings.gasPercentHelium / 100;
+        const simulatedTimeStep = userSettings.simulatedTimeStep;
+        const gas_pressure = helium_frac * amb_pressure;
         const p = current_pressure +
             (gas_pressure - current_pressure) *
             (1 - (1/2) ** (simulatedTimeStep/half_life));
@@ -67,32 +93,74 @@ const Plot = () => {
 
     // effect to update the plot with each new step
     useEffect(() => {
+        if (Object.keys(userSettings).length === 0 || Object.keys(CONSTANTS).length === 0) {
+            console.log("loading...");
+            return;
+        }
         const newDepth = depth;
         const newAmbientPressure = depth / 33 + 1;
         const newDiveTime = diveTime + userSettings.simulatedTimeStep;
         const oldDataPoint = chartData.length >=1 && chartData[chartData.length-1]; // get the latest data point
-        const newMValue = getNextMValue(oldDataPoint.tissue_pressure, )
+        // const newMValue = getNextMValue(oldDataPoint.tissue_pressure, )
+
         setDiveTime(newDiveTime);
+
+        // new data point for the chartData
         const newDataPoint = {
             diveTime: newDiveTime,
             depthLine: parseFloat(newDepth),
             ambientPressureLine: newAmbientPressure,
-            c1: {
-                mValueLine: newMValue,
-                nitrogenLine: getNextTissuePressure(
-                    oldDataPoint.c1.nitrogenLine,
-                    newAmbientPressure,
-                    CONSTANTS.nitrogen.half_life.c1 // Nitrogen compartment 1 half life
-                )
+            leadingMValueLine: getLeadingMValueLine(oldDataPoint)
+        };
+
+        // loop over all {16} compartments 
+        for (let i=1; i<= 4; i++) {
+            const compartment = `c${i}`;
+            // console.log(`nitrogen for cpt ${compartment}`, userSettings.linesConfig);
+            // userSettings.linesConfig[compartment].nitrogenLine.visible);
+            const nitrogenCompartment = CONSTANTS.nitrogen[compartment]
+            const heliumCompartment = CONSTANTS.helium[compartment];
+            const oldNitrogenLine = oldDataPoint[compartment]?.nitrogenLine;
+            const oldHeliumLine = oldDataPoint[compartment]?.heliumLine;
+            
+            // get the new nitrogen pressure
+            const nitrogenPoint = getNextTissuePressureNitrogen(
+                oldNitrogenLine,
+                newAmbientPressure,
+                nitrogenCompartment.half_life // Nitrogen compartment 1 half life
+            );
+
+            // get the new m value
+            const mValuePoint = getNextMValue(
+                oldNitrogenLine,
+                nitrogenCompartment.a,
+                nitrogenCompartment.b
+            );
+
+            // get the new helium pressure
+            const heliumPoint = getNextTissuePressureHelium(
+                oldHeliumLine,
+                newAmbientPressure,
+                heliumCompartment.half_life
+            );
+
+            // add this {compartment} to newDataPoint and continue the loop
+            newDataPoint[compartment] = {
+                nitrogenLine: nitrogenPoint,
+                mValueLine: mValuePoint,
+                heliumLine: heliumPoint
             }
         }
+
+        // write the new dat apoint
         setChartData(currentData => {
             let newData = [...currentData, newDataPoint];
 
             if (newData.length > MAX_DATA_POINTS) {
                 newData = newData.slice(newData.length - MAX_DATA_POINTS);
             }
-            return [...newData, newDataPoint];
+            // return [...newData, newDataPoint];
+            return newData;
         });
     }, [stepNumber]);
 
@@ -109,7 +177,7 @@ const Plot = () => {
                 {depth}
             </div>
             <div className='live-plot'>
-                <ResponsiveContainer width="100%" height={600}>
+                <ResponsiveContainer width="100%" aspect={1.4}>
                 <LineChart data={chartData}>
 
                     <CartesianGrid strokeDasharray="3 3" />
@@ -125,7 +193,6 @@ const Plot = () => {
                         const lineConfig = userSettings.linesConfig[key];
                         if (!key.startsWith('c')) {
                             if (lineConfig.visible) {
-                                console.log("working key:", key);
                                 return (
                                     <Line
                                         key={key}
@@ -144,11 +211,6 @@ const Plot = () => {
                             return Object.keys(lineConfig).map(key2 => {
                                 const cLineConfig = userSettings.linesConfig[key][key2];
                                 if (cLineConfig.visible) {
-                                    // console.log(chartData.key[key2]);
-                                    console.log("");
-                                    console.log(key, key2);
-                                    console.log(chartData[chartData.length-1][key][key2]);
-                                    console.log("");
                                     return (
                                         <Line
                                             key={`${key}-${key2}`}
