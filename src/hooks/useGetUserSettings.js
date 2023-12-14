@@ -1,4 +1,4 @@
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useGetUserInfo } from "./useGetUserInfo";
 import { db } from "../config/firebase-config";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ export const useGetUserSettings = () => {
     const getUserSettings = async () => {
         let unsubscribe;
         try {
-            const userSettingsDoc = getDoc(userSettingsDocRef);
+            // const userSettingsDoc = getDoc(userSettingsDocRef);
             unsubscribe = onSnapshot(userSettingsDocRef, (doc) => {
                 if(doc.data()) {
                     setUserSettings(doc.data());
@@ -37,7 +37,7 @@ export const useGetUserSettings = () => {
 
     useEffect(() => {
         getUserSettings();
-    }, []);
+    });
 
     return { userSettings };
 }

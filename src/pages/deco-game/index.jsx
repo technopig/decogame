@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Plot from "../../components/plot/Plot";
 import SettingsPane from "../../components/settings-pane/SettingsPane";
-import "./styles.css";
+import "../../App.css";
 
 export const DecoGame = () => {
     // hooks
@@ -40,7 +40,7 @@ export const DecoGame = () => {
             <div>
                 <h3>Welcome to DecoGame!</h3>
             </div>
-            <div className="game-area">
+            <div className="game-and-settings-area">
                 <Plot />
                 <SettingsPane />
             </div>

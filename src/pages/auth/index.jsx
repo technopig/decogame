@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
-// import './styles.css';
 
 export const Auth = () => {
 

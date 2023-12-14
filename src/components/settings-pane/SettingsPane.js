@@ -1,9 +1,7 @@
-//latest: fix the problem where it gets into useSetUserSettings and borks things
-
 import { useState } from "react";
 import { useSetUserSettings } from "../../hooks/useSetUserSettings";
 import { useGetUserSettings } from "../../hooks/useGetUserSettings";
-import "./styles.css";
+import "../../App.css";
 
 const SettingsPane = () => {
 

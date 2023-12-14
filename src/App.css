@@ -3,17 +3,6 @@
   justify-content: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -29,11 +18,54 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.game-and-settings-area {
+  display: flex;
+  flex-direction:row;
+  height: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items to the start of the cross axis */
+  gap: 10px; /* Adds space between flex items */
+  /* background-color: lightcoral; */
+}
+
+.game-pane {
+  flex: 5;
+  height: 100%;
+  width: 100%;
+  /* Optional: if you want to set a maximum width or use a percentage */
+  /* min-height: 400; */
+  /* background-color: lightblue; */
+}
+
+.live-plot, .plot {
+  width: 100%; /* This will make them fill their flex container */
+  height: 100%;
+  /* background-color: red; */
+}
+
+.settings-pane {
+  flex: 1; /* Takes 1 part of the space */
+  /* Max width to limit the width of settings pane */
+  max-width: 300px; /* Adjust this as needed */
+  margin: 10px;
+  padding: 10px;
+  background-color: lightgrey;
+  /* Make sure child elements like h3 and input are styled correctly */
+}
+
+/* Specific styles for elements inside settings-pane */
+.settings-pane h3 {
+  padding: 20px 10px 0px 10px;
+  margin: 0;
+}
+.settings-pane input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+.settings-pane ul {
+  background-color: none;
+  text-align: left;
+  list-style-position: outside;
 }
