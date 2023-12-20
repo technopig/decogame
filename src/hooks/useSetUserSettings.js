@@ -9,7 +9,7 @@ export const useSetUserSettings = () => {
     const updateSettings = async (
         //default settings
         { 
-            maxDepth = 300,
+            maxDepth = 130,
             chartUpdateIntervalMS = 25,
             gasPercentHelium = 0,
             gasPercentNitrogen = 79,

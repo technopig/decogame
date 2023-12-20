@@ -6,9 +6,6 @@ import useSetUserSettings from "../../hooks/useSetUserSettings";
 // import './styles.css';
 
 
-
-
-
 export const SignUp = () => {
 
     // states
@@ -38,12 +35,7 @@ export const SignUp = () => {
             localStorage.setItem('token', user.accessToken);
             localStorage.setItem('auth', JSON.stringify(authInfo));
 
-            updateSettings({
-                chartUpdateIntervalMS: 50,
-                gasPercentHelium: 0,
-                gasPercentNitrogen: 79,
-                gasPercentOxygen: 21
-            });
+            updateSettings({});
             
             navigate("/deco-game");
         } catch (err) {
@@ -64,7 +56,7 @@ export const SignUp = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <br />  {/*<br />*/}
+                <br />
                 <input
                     type="password"
                     placeholder="password"

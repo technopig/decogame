@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
+import { useSetUserSettings } from "../../hooks/useSetUserSettings";
 
 export const Auth = () => {
 
@@ -13,6 +14,7 @@ export const Auth = () => {
     // hooks
     const navigate = useNavigate();
     const { isAuth } = useGetUserInfo();
+    const { updateSettings } = useSetUserSettings();
 
     if (isAuth) {
         return <Navigate to="/deco-game" />;

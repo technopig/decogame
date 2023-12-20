@@ -181,7 +181,7 @@ const Plot = () => {
                 {depth}
             </div>
             <div className='live-plot'>
-                <ResponsiveContainer width="100%" aspect={1.4}>
+                <ResponsiveContainer width="100%" aspect={1.8}>
                 <LineChart data={chartData}>
 
                     <CartesianGrid strokeDasharray="3 3" />

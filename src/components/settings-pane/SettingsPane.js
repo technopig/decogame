@@ -37,6 +37,7 @@ const SettingsPane = () => {
                     type="float"
                     name="Max Depth"
                     id="max-depth"
+                    placeholder={userSettings.maxDepth}
                     onChange={(e) => setMaxDepth(e.target.value)}
                 />
             </label>
